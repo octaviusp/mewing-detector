@@ -7,6 +7,7 @@ from scripts import (
 
 IMAGES_PATH_FROM_START_SCRIPT = "images/"
 IMAGES_PATH_FOR_SCRIPTS = "/images/"
+
 IMAGE_DIMENSION = (128,128,1)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 

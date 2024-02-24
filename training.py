@@ -1,8 +1,9 @@
 from neural_network_architecture import CNN_architecture
 from data_preprocessing import x_y_images
-from scripts import create_dataset
+from scripts import create_dataset, image_processing
 import numpy as np
 import tensorflow as tf
+import os
 
 checkpoint_path = "training/cp.ckpt"
 checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
@@ -33,7 +34,7 @@ history = model.fit(
     x_train,
     y_train,
     epochs=10,
-    batch_size=32,
+    batch_size=12,
     callbacks=[checkpoint_callback]
 )
 
@@ -41,3 +42,24 @@ test_loss, test_accuracy = model.evaluate(x_test, y_test)
 
 print("Test Loss:", test_loss)
 print("Test Accuracy:", test_accuracy)
+
+inference_path = "./images/inference_test/"
+
+inference_images = os.listdir(inference_path)
+
+processed_images = []
+for inference_image in inference_images:
+    processed_image = image_processing.Processor_1.process_on_demand(inference_path+inference_image)
+    if processed_image is None:
+        print("- Error predicting this image... ", inference_image)
+        continue
+    processed_images.append(processed_image)
+
+print(np.array(processed_images))
+predictions = model.predict(np.array(processed_images))
+
+for index, image in enumerate(inference_images):
+    try:
+        print(" - Image: ", image, " - Prediction: ", predictions[index])
+    except:
+        pass

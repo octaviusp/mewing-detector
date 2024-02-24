@@ -38,14 +38,25 @@ class ImageProcessor():
         img_array = np.array(img)
         return img_array
 
-    def process(self, image_path: str):
+    def process_on_demand(self, image: str | bytes):
+        try:
+            img = Image.open(image)
+            resized_img = img.resize(self.IMAGE_DIMENSION)
+
+            color_mode = "L" if self.CHANNELS == 1 else "RGB"
+            converted_img = resized_img.convert(color_mode)
+            np_array = np.array(converted_img)
+            return np_array.reshape(np_array.shape[0], np_array.shape[1], self.CHANNELS)
+        except Exception as e:
+            pass
+
+    def process(self, image_path: str, on_demand = False):
         try:
             img = Image.open(image_path)
             resized_img = img.resize(self.IMAGE_DIMENSION)
 
             color_mode = "L" if self.CHANNELS == 1 else "RGB"
             converted_img = resized_img.convert(color_mode)
-
             save_path = self.NEGATIVE_LABEL_IMAGE_FOLDER_PATH + "image_" + str(self.IMAGE_COUNTER) + ".png"
             converted_img.save(save_path)
             self.IMAGE_COUNTER += 1
